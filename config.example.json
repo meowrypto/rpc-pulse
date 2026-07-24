@@ -8,7 +8,7 @@
       "method": "getSlot",
       "params": [],
       "result_path": "result",
-      "latency_threshold_ms": 800,
+      "latency_threshold_ms": 1200,
       "height_lag_threshold": 10
     },
     {

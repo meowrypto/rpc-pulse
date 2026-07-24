@@ -82,7 +82,10 @@ def check_endpoint(endpoint, timeout):
     req = urllib.request.Request(
         url,
         data=payload,
-        headers={"Content-Type": "application/json"},
+        headers={
+            "Content-Type": "application/json",
+            "User-Agent": "Mozilla/5.0 (compatible; rpc-pulse/1.0; +https://github.com/meowrypto/rpc-pulse)",
+        },
         method="POST",
     )
 
