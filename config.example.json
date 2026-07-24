@@ -12,8 +12,8 @@
       "height_lag_threshold": 10
     },
     {
-      "name": "Ethereum (public)",
-      "url": "https://eth.llamarpc.com",
+      "name": "Ethereum (publicnode)",
+      "url": "https://ethereum-rpc.publicnode.com",
       "method": "eth_blockNumber",
       "params": [],
       "result_path": "result",
@@ -21,8 +21,8 @@
       "height_lag_threshold": 3
     },
     {
-      "name": "Somnia (example - replace with real RPC URL)",
-      "url": "https://rpc.somnia.example",
+      "name": "Somnia Mainnet",
+      "url": "https://api.infra.mainnet.somnia.network",
       "method": "eth_blockNumber",
       "params": [],
       "result_path": "result",

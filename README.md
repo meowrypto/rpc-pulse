@@ -106,7 +106,8 @@ used directly in health-check scripts or CI pipelines.
 | `params`               | Params array for the RPC call (usually empty)                                 |
 | `result_path`          | Dotted path to the height value in the JSON response (e.g. `result` or `result.value`) |
 | `latency_threshold_ms` | Latency above this triggers a `WARN` status                                   |
-| `height_lag_threshold` | If an endpoint's height falls this far behind the highest seen, triggers `WARN` |
+| `height_lag_threshold` | If an endpoint's height falls this far behind the highest seen **in its group**, triggers `WARN` |
+| `group` (optional)     | Endpoints only get compared for height-lag against others in the same group. Defaults to the endpoint's own `name`, so unrelated chains are never compared by default. Set two endpoints to the same `group` (e.g. `"ethereum"`) when you're monitoring multiple providers of the *same* chain and want to catch one falling behind the others. |
 
 This works for any JSON-RPC chain — just change `method` and `result_path` to
 match the chain's API (e.g. Solana's `getSlot` returns a plain integer in

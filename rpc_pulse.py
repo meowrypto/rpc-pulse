@@ -203,12 +203,23 @@ def run_cycle(config, log_path):
     endpoints = config["endpoints"]
 
     raw_results = [check_endpoint(ep, timeout) for ep in endpoints]
-    heights = [r["height"] for r in raw_results if r["height"] is not None]
-    max_height = max(heights) if heights else None
+
+    # Height comparison only makes sense between endpoints of the SAME chain
+    # (e.g. multiple providers for Ethereum). By default each endpoint is its
+    # own group (identified by name), so unrelated chains are never compared
+    # against each other. Set a shared "group" value in the config to opt
+    # two or more endpoints of the same chain into lag comparison.
+    group_max_height = {}
+    for r, ep in zip(raw_results, endpoints):
+        group = ep.get("group", ep["name"] if "name" in ep else r["name"])
+        if r["height"] is not None:
+            current = group_max_height.get(group)
+            group_max_height[group] = r["height"] if current is None else max(current, r["height"])
 
     results_with_status = []
     for r, ep in zip(raw_results, endpoints):
-        status, reason = evaluate_status(r, ep, max_height)
+        group = ep.get("group", ep["name"] if "name" in ep else r["name"])
+        status, reason = evaluate_status(r, ep, group_max_height.get(group))
         results_with_status.append((r, status, reason))
 
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
