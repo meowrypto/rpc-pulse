@@ -1,0 +1,33 @@
+{
+  "interval_seconds": 30,
+  "timeout_seconds": 5,
+  "endpoints": [
+    {
+      "name": "Solana Mainnet",
+      "url": "https://api.mainnet-beta.solana.com",
+      "method": "getSlot",
+      "params": [],
+      "result_path": "result",
+      "latency_threshold_ms": 800,
+      "height_lag_threshold": 10
+    },
+    {
+      "name": "Ethereum (public)",
+      "url": "https://eth.llamarpc.com",
+      "method": "eth_blockNumber",
+      "params": [],
+      "result_path": "result",
+      "latency_threshold_ms": 1000,
+      "height_lag_threshold": 3
+    },
+    {
+      "name": "Somnia (example - replace with real RPC URL)",
+      "url": "https://rpc.somnia.example",
+      "method": "eth_blockNumber",
+      "params": [],
+      "result_path": "result",
+      "latency_threshold_ms": 1000,
+      "height_lag_threshold": 5
+    }
+  ]
+}

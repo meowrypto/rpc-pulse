@@ -1,0 +1,16 @@
+# Local config with real (possibly private) RPC URLs
+config.json
+
+# Logs
+*.jsonl
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS/editor
+.DS_Store
+.vscode/
