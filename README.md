@@ -134,3 +134,4 @@ it in an issue first.
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
