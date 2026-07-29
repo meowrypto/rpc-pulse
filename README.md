@@ -144,3 +144,4 @@ If rpc-pulse is useful to you, consider supporting its development:
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
