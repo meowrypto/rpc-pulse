@@ -1,5 +1,7 @@
 # rpc-pulse
 
+[![Support this project](https://img.shields.io/badge/support-donatr.ee-orange?logo=heart&logoColor=white)](https://donatr.ee/meowrypto/)
+
 A lightweight, **zero-dependency** JSON-RPC health & latency monitor for blockchain nodes.
 
 Check the latency, sync status, and block height of one or more RPC endpoints
@@ -130,6 +132,14 @@ Issues and pull requests are welcome — especially additional chain examples
 for `config.example.json`, or small robustness improvements. Please keep the
 zero-dependency philosophy: if a feature needs a third-party package, discuss
 it in an issue first.
+
+## Support
+
+If rpc-pulse is useful to you, consider supporting its development:
+
+**[https://donatr.ee/meowrypto/](https://donatr.ee/meowrypto/)**
+
+<img src="assets/donate-qr.gif" alt="Donation QR code" width="180" />
 
 ## License
 
