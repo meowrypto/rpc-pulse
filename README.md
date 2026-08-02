@@ -141,6 +141,7 @@ If rpc-pulse is useful to you, consider supporting its development:
 
 <img src="assets/donate-qr.gif" alt="Donation QR code" width="180" />
 
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
