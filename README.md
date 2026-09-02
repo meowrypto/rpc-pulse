@@ -56,7 +56,7 @@ Launch `rpc-pulse` with the `--tui` flag for a real-time, interactive dashboard 
   | RPC Node #1  |      | RPC Node #2  |      | RPC Node #3  |
   | Status: OK   |      | Status: WARN |      | Status: FAIL |
   +--------------+      +--------------+      +--------------+
-
+```
 ---
 
 ## ⚡ Quick Start
@@ -64,8 +64,7 @@ Launch `rpc-pulse` with the `--tui` flag for a real-time, interactive dashboard 
 ### 1. Clone & Setup
 
 ```bash
-git clone [https://github.com/meowrypto/rpc-pulse.git](https://github.com/meowrypto/rpc-pulse.git)
-cd rpc-pulse
+git clone [https://github.com/meowrypto/rpc-pulse.git](https://github.com/meowrypto/rpc-pulse.git)cd rpc-pulse
 cp config.example.json config.json
 
 ```
