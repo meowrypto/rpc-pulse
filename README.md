@@ -180,7 +180,7 @@ Issues and pull requests are highly welcome! Feel free to open an issue or submi
 
 If `rpc-pulse` helps optimize your Web3 infrastructure, feel free to support the project:
 
-👉 **[donatr.ee/meowrypto](https://www.google.com/url?sa=E&source=gmail&q=https://donatr.ee/meowrypto/)**
+👉 **[donatr.ee/meowrypto](https://donatr.ee/meowrypto/)**
 
 ---
 
