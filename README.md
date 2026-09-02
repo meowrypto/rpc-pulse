@@ -26,7 +26,6 @@ Launch `rpc-pulse` with the `--tui` flag for a real-time, interactive dashboard 
 
 ```
 
----
 
 ## 🚀 Key Features
 
@@ -36,7 +35,7 @@ Launch `rpc-pulse` with the `--tui` flag for a real-time, interactive dashboard 
 * **📦 Zero Mandatory Dependencies**: Operates 100% on Python 3.7+ standard library. Optional integration support for `rich` (enhanced UI) and `websockets` (WSS testing).
 * **💾 Log Rotation & Metrics**: Automatically limits log file sizes (`log_max_mb`) to prevent disk overload, saving structured `.jsonl` data.
 
----
+
 
 ## 🏗️ Architecture & Proxy Flow
 
