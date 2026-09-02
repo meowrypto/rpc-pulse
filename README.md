@@ -187,7 +187,3 @@ If `rpc-pulse` helps optimize your Web3 infrastructure, feel free to support the
 ## 📄 License
 
 Distributed under the **MIT License**. See `LICENSE` for details.
-
-```
-
-```
