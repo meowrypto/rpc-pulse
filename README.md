@@ -1,150 +1,203 @@
-# rpc-pulse
+# ⚡ rpc-pulse
 
-[![Support this project](https://img.shields.io/badge/support-donatr.ee-orange?logo=heart&logoColor=white)](https://donatr.ee/meowrypto/)
+<p align="center">
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.7+-blue.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python Version" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge" alt="License" /></a>
+  <a href="https://github.com/meowrypto/rpc-pulse"><img src="https://img.shields.io/badge/dependencies-zero%20mandatory-brightgreen.svg?style=for-the-badge" alt="Dependencies" /></a>
+  <a href="https://donatr.ee/meowrypto/"><img src="https://img.shields.io/badge/support-donatr.ee-orange?style=for-the-badge&logo=heart&logoColor=white" alt="Support" /></a>
+</p>
 
-A lightweight, **zero-dependency** JSON-RPC health & latency monitor for blockchain nodes.
+<p align="center">
+  <b>A lightweight, production-grade JSON-RPC health monitor, smart proxy, and alerting system for blockchain nodes.</b><br>
+  <i>Monitor latency, sync status, and block height across EVM, Solana, and custom chains — without Grafana, Prometheus, or heavy Docker stacks.</i>
+</p>
 
-Check the latency, sync status, and block height of one or more RPC endpoints
-(Solana, Ethereum/EVM chains, Somnia, or any JSON-RPC-compatible chain) from a
-single small Python script — no Grafana, no Prometheus, no Docker stack required.
+---
+
+## 🖥️ Live Terminal Interface (TUI Mode)
+
+Launch `rpc-pulse` with the `--tui` flag for a real-time, interactive dashboard in your terminal:
+
+```text
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                   RPC PULSE MONITOR                                    │
+├───────────────────────┬────────┬───────────┬──────────────┬────────────┬──────┬────────┤
+│ ENDPOINT              │ STATUS │ LATENCY   │ SPARKLINE    │ HEIGHT     │ LAG  │ SUCCESS│
+├───────────────────────┼────────┼───────────┼──────────────┼────────────┼──────┼────────┤
+│ Solana Mainnet        │   OK   │ 124.2ms   │ ▂▃▄▅█        │ 301829123  │ 0    │ 99.8%  │
+│ Ethereum PublicNode   │   OK   │  85.4ms   │ ▂▂▃▄▅        │  20658421  │ 0    │ 100.0% │
+│ Ethereum Cloudflare   │   WARN │ 1020.1ms  │ ▄▅▆▇█        │  20658418  │ 3    │ 98.2%  │
+└───────────────────────┴────────┴───────────┴──────────────┴────────────┴──────┴────────┘
 
 ```
-[2026-07-24 10:15:32 UTC] rpc-pulse check
-----------------------------------------------------------------
-[OK  ] Solana Mainnet       latency=142.3ms   height=301829123
-[WARN] Ethereum (public)    latency=1240.1ms  height=20981233  (latency 1240.1ms > 1000ms)
-[FAIL] Somnia RPC           latency=n/a       height=n/a       (Connection refused)
-----------------------------------------------------------------
+
+---
+
+## 🚀 Key Features
+
+* **🔄 Smart Local RPC Proxy**: Built-in HTTP proxy (`http://127.0.0.1:8545`) that routes JSON-RPC requests to the healthiest and lowest-latency node with instant, transparent failover.
+* **📊 Live Terminal UI (TUI)**: Interactive dashboard featuring real-time latency sparklines, block height tracking, and success rates.
+* **🚨 Webhook Alerting**: Instant Discord & Telegram notifications for node downtime, recovery, height lag, and latency spikes with cooldown spam prevention.
+* **📦 Zero Mandatory Dependencies**: Operates 100% on Python 3.7+ standard library. Optional integration support for `rich` (enhanced UI) and `websockets` (WSS testing).
+* **💾 Log Rotation & Metrics**: Automatically limits log file sizes (`log_max_mb`) to prevent disk overload, saving structured `.jsonl` data.
+
+---
+
+## 🏗️ Architecture & Proxy Flow
+
+```text
+                  ┌────────────────────────┐
+                  │ Web3 App / Bot / Wallet │
+                  └───────────┬────────────┘
+                              │ Sends JSON-RPC Requests
+                              ▼
+                  ┌────────────────────────┐
+                  │  rpc-pulse Smart Proxy │
+                  │  ([http://127.0.0.1:8545](http://127.0.0.1:8545))│
+                  └───────────┬────────────┘
+                              │
+          ┌───────────────────┼───────────────────┐
+          │ (Best Latency)    │ (Fallback 1)      │ (Fallback 2)
+          ▼                   ▼                   ▼
+  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+  │ RPC Node #1  │    │ RPC Node #2  │    │ RPC Node #3  │
+  │ Status: OK   │    │ Status: WARN │    │ Status: FAIL │
+  └──────────────┘    └──────────────┘    └──────────────┘
+
 ```
 
-## Why this exists
+---
 
-If you're staking, validating, or just relying on a public/private RPC endpoint,
-it's easy to be flying blind — you don't find out an endpoint is lagging or down
-until something else breaks. Full observability stacks (Prometheus + Grafana,
-etc.) are overkill if you just want to know: *is this endpoint fast, healthy,
-and in sync right now?*
+## ⚡ Quick Start
 
-rpc-pulse aims to be the smallest useful tool that answers that question —
-readable in one sitting, runs anywhere Python 3.7+ runs, and has no
-dependencies to install or maintain.
-
-## Features
-
-- Polls any number of JSON-RPC endpoints on a configurable interval
-- Measures round-trip latency per endpoint
-- Extracts block height / slot number and flags endpoints falling behind the pack
-- Color-coded terminal output (OK / WARN / FAIL)
-- Structured JSONL log file for later analysis
-- Single-run mode (`--once`) for use in cron jobs or CI health checks
-- No third-party dependencies — pure Python standard library
-
-## Requirements
-
-- Python 3.7 or later
-- No external packages needed
-
-## Installation
+### 1. Clone & Setup
 
 ```bash
-git clone https://github.com/<your-username>/rpc-pulse.git
+git clone [https://github.com/meowrypto/rpc-pulse.git](https://github.com/meowrypto/rpc-pulse.git)
 cd rpc-pulse
 cp config.example.json config.json
+
 ```
 
-Edit `config.json` and replace the example endpoints with the RPC URLs you
-want to monitor.
+### 2. Optional Enhancements (Recommended)
 
-## Usage
-
-Run continuously (default interval from config, or override with `--interval`):
+`rpc-pulse` works out-of-the-box with zero third-party packages. Install these only if you want enhanced features:
 
 ```bash
-python rpc_pulse.py
+# For rich interactive TUI sparklines and formatted tables
+pip install rich
+
+# For testing WebSocket (ws:// / wss://) endpoints
+pip install websockets
+
 ```
 
-Run a single check cycle and exit (useful for cron / scheduled tasks):
+---
 
-```bash
-python rpc_pulse.py --once
-```
+## 💻 Usage Examples
 
-Use a custom config file or interval:
+> [!TIP]
+> **Running in Production?** Use `--tui` for monitoring sessions or `--once` for automated Cron / CI health checks!
 
-```bash
-python rpc_pulse.py --config production.json --interval 15
-```
+| Command | Description |
+| --- | --- |
+| `python rpc_pulse.py` | Continuous background monitoring with JSONL logging |
+| `python rpc_pulse.py --tui` | Interactive live terminal dashboard |
+| `python rpc_pulse.py --once` | Executes a single check cycle and exits with status codes (0 = OK, 1 = FAIL) |
+| `python rpc_pulse.py --config my_config.json` | Runs using a custom configuration file |
 
-Exit code is `1` if any endpoint reports `FAIL` in `--once` mode, so it can be
-used directly in health-check scripts or CI pipelines.
+---
 
-## Configuration reference
+## 🌐 Smart Proxy Integration
 
-`config.json` structure:
+> [!NOTE]
+> Point your local tools to `http://127.0.0.1:8545` to automatically execute transactions and RPC calls through the fastest available node in your pool.
+
+1. Enable the proxy in your `config.json` (`"proxy": { "enabled": true, "port": 8545 }`).
+2. Update your Web3 tools / scripts:
+* **MetaMask**: Custom RPC URL -> `http://127.0.0.1:8545`
+* **Web3.py / Ethers.js**: Set HTTP Provider -> `http://127.0.0.1:8545`
+* **Foundry / Hardhat**: `--rpc-url http://127.0.0.1:8545`
+
+
+
+---
+
+## ⚙️ Configuration Guide (`config.json`)
 
 ```json
 {
-  "interval_seconds": 30,
+  "interval_seconds": 10,
   "timeout_seconds": 5,
+  "log_max_mb": 5,
+  "proxy": {
+    "enabled": true,
+    "port": 8545
+  },
+  "alerts": {
+    "discord_webhook_url": "[https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_TOKEN](https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_TOKEN)",
+    "telegram_bot_token": "YOUR_BOT_TOKEN",
+    "telegram_chat_id": "YOUR_CHAT_ID",
+    "cooldown_minutes": 10
+  },
   "endpoints": [
     {
-      "name": "My Endpoint",
-      "url": "https://your-rpc-url",
+      "name": "Ethereum PublicNode",
+      "url": "[https://ethereum-rpc.publicnode.com](https://ethereum-rpc.publicnode.com)",
       "method": "eth_blockNumber",
       "params": [],
       "result_path": "result",
       "latency_threshold_ms": 1000,
-      "height_lag_threshold": 5
+      "height_lag_threshold": 3,
+      "group": "ethereum"
     }
   ]
 }
+
 ```
 
-| Field                  | Description                                                                 |
-|------------------------|-------------------------------------------------------------------------------|
-| `name`                 | Display name for the endpoint                                                 |
-| `url`                  | JSON-RPC endpoint URL                                                         |
-| `method`               | JSON-RPC method used to fetch the current height (e.g. `getSlot`, `eth_blockNumber`) |
-| `params`               | Params array for the RPC call (usually empty)                                 |
-| `result_path`          | Dotted path to the height value in the JSON response (e.g. `result` or `result.value`) |
-| `latency_threshold_ms` | Latency above this triggers a `WARN` status                                   |
-| `height_lag_threshold` | If an endpoint's height falls this far behind the highest seen **in its group**, triggers `WARN` |
-| `group` (optional)     | Endpoints only get compared for height-lag against others in the same group. Defaults to the endpoint's own `name`, so unrelated chains are never compared by default. Set two endpoints to the same `group` (e.g. `"ethereum"`) when you're monitoring multiple providers of the *same* chain and want to catch one falling behind the others. |
+### Parameter Reference
 
-This works for any JSON-RPC chain — just change `method` and `result_path` to
-match the chain's API (e.g. Solana's `getSlot` returns a plain integer in
-`result`; EVM chains' `eth_blockNumber` returns a hex string in `result`, which
-rpc-pulse decodes automatically).
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `interval_seconds` | `int` | Frequency of node health checks (in seconds). |
+| `timeout_seconds` | `int` | Maximum response timeout before marking requests as `FAIL`. |
+| `log_max_mb` | `int` | Size limit before `.jsonl` log file rotation occurs. |
+| `proxy.enabled` | `bool` | Enables the smart local load balancing proxy. |
+| `alerts.cooldown_minutes` | `int` | Minimum time between identical alert notifications to avoid spam. |
+| `endpoints[].group` | `string` | Categorizes nodes by chain to measure relative block height lag. |
 
-## Log output
+---
 
-Every check cycle appends one JSON line per endpoint to `rpc_pulse_log.jsonl`:
+## 📝 Log Format
+
+Logs are stored in machine-readable JSON-Lines (`.jsonl`) format:
 
 ```json
-{"timestamp": "2026-07-24 10:15:32 UTC", "name": "Solana Mainnet", "url": "...", "status": "OK", "latency_ms": 142.3, "height": 301829123, "reason": null}
+{"timestamp": "2026-09-02 10:15:32 UTC", "name": "Solana Mainnet", "url": "[https://api.mainnet-beta.solana.com](https://api.mainnet-beta.solana.com)", "status": "OK", "latency_ms": 142.3, "height": 301829123, "lag": 0, "success_rate": 99.8}
+
 ```
 
-This makes it easy to feed into a spreadsheet, `jq`, or a plotting script later.
+---
 
-## Contributing
+## 🤝 Contributing
 
-Issues and pull requests are welcome — especially additional chain examples
-for `config.example.json`, or small robustness improvements. Please keep the
-zero-dependency philosophy: if a feature needs a third-party package, discuss
-it in an issue first.
+Issues and pull requests are highly welcome! Feel free to open an issue or submit improvements for performance and new chain configurations.
 
-## Support
+---
 
-If rpc-pulse is useful to you, consider supporting its development:
+## ☕ Support
 
-**[https://donatr.ee/meowrypto/](https://donatr.ee/meowrypto/)**
+If `rpc-pulse` helps optimize your Web3 infrastructure, feel free to support the project:
 
-<img src="assets/donate-qr.gif" alt="Donation QR code" width="180" />
+👉 **[donatr.ee/meowrypto](https://www.google.com/url?sa=E&source=gmail&q=https://donatr.ee/meowrypto/)**
 
+---
 
-## License
+## 📄 License
 
+Distributed under the **MIT License**. See `LICENSE` for details.
 
-MIT — see [LICENSE](LICENSE).
+```
 
-
+```
