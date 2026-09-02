@@ -18,16 +18,11 @@
 
 Launch `rpc-pulse` with the `--tui` flag for a real-time, interactive dashboard in your terminal:
 
-```text
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                                   RPC PULSE MONITOR                                    │
-├───────────────────────┬────────┬───────────┬──────────────┬────────────┬──────┬────────┤
-│ ENDPOINT              │ STATUS │ LATENCY   │ SPARKLINE    │ HEIGHT     │ LAG  │ SUCCESS│
-├───────────────────────┼────────┼───────────┼──────────────┼────────────┼──────┼────────┤
-│ Solana Mainnet        │   OK   │ 124.2ms   │ ▂▃▄▅█        │ 301829123  │ 0    │ 99.8%  │
-│ Ethereum PublicNode   │   OK   │  85.4ms   │ ▂▂▃▄▅        │  20658421  │ 0    │ 100.0% │
-│ Ethereum Cloudflare   │   WARN │ 1020.1ms  │ ▄▅▆▇█        │  20658418  │ 3    │ 98.2%  │
-└───────────────────────┴────────┴───────────┴──────────────┴────────────┴──────┴────────┘
+| ENDPOINT | STATUS | LATENCY | SPARKLINE | HEIGHT | LAG | SUCCESS |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Solana Mainnet** | ` OK ` | 124.2ms | ▂▃▄▅█ | 301829123 | 0 | 99.8% |
+| **Ethereum PublicNode** | ` OK ` | 85.4ms | ▂▂▃▄▅ | 20658421 | 0 | 100.0% |
+| **Ethereum Cloudflare** | `WARN` | 1020.1ms | ▄▅▆▇█ | 20658418 | 3 | 98.2% |
 
 ```
 
@@ -46,24 +41,23 @@ Launch `rpc-pulse` with the `--tui` flag for a real-time, interactive dashboard 
 ## 🏗️ Architecture & Proxy Flow
 
 ```text
-                  ┌────────────────────────┐
-                  │ Web3 App / Bot / Wallet │
-                  └───────────┬────────────┘
-                              │ Sends JSON-RPC Requests
-                              ▼
-                  ┌────────────────────────┐
-                  │  rpc-pulse Smart Proxy │
-                  │  ([http://127.0.0.1:8545](http://127.0.0.1:8545))│
-                  └───────────┬────────────┘
-                              │
-          ┌───────────────────┼───────────────────┐
-          │ (Best Latency)    │ (Fallback 1)      │ (Fallback 2)
-          ▼                   ▼                   ▼
-  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-  │ RPC Node #1  │    │ RPC Node #2  │    │ RPC Node #3  │
-  │ Status: OK   │    │ Status: WARN │    │ Status: FAIL │
-  └──────────────┘    └──────────────┘    └──────────────┘
-
+                  +-------------------------+
+                  | Web3 App / Bot / Wallet |
+                  +------------+------------+
+                               | Sends Requests
+                               v
+                  +-------------------------+
+                  |  rpc-pulse Smart Proxy  |
+                  |     (localhost:8545)    |
+                  +------------+------------+
+                               |
+         +---------------------+---------------------+
+         | (Best Latency)      | (Fallback 1)        | (Fallback 2)
+         v                     v                     v
+  +--------------+      +--------------+      +--------------+
+  | RPC Node #1  |      | RPC Node #2  |      | RPC Node #3  |
+  | Status: OK   |      | Status: WARN |      | Status: FAIL |
+  +--------------+      +--------------+      +--------------+
 ```
 
 ---
